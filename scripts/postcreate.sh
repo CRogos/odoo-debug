@@ -1,21 +1,34 @@
 #!/bin/bash
 
 echo "Running postcreate.sh script"
-sudo chown vscode:vscode /workspace
-sudo chown vscode:vscode /home/vscode/.cache
 
-cp -r /repo/.vscode /workspace/
-cp /repo/.env /workspace/.env
+# Change owner and rights of ssh keys
+chown root:root ~/.ssh/*
+chmod 0600 ~/.ssh/*
 
-if ! test -d /workspace/odoo; then
+if ! test -d /src/.vscode; then
+    echo "Creating /src directory"
+    ln -s /repo/.vscode /src/.vscode
+    mkdir /src/screenshots
+fi
+cp /repo/.env /src/.env
+
+if ! test -d /src/user; then
     echo "Cloning git repositories"
-    cd /workspace
-    git clone -b 16.0 --single-branch https://github.com/odoo/odoo.git odoo
-    # Add additional repositories here
-    # git clone -b 16.0 https://github.com/oca/timesheet.git timesheet
-    # ^^
-    # cd /workspace/timesheet
-    # git submodule update --init
+    cd /src
+    git clone -b 18.0 --single-branch https://github.com/odoo/odoo.git odoo
+    
+    # replace this repository with your own project
+    git clone -b 18.0 https://github.com/crogos/odoo-sample-project.git user
+
+    # requires ssh key to checkout submodules with ssh protocol
+    cd /src/user
+    git submodule update --init
+    git submodule update
+
+    # install pre-commit
+    git submodule foreach '[ "$(echo $path | grep -o "modules/oca")" ] && pre-commit install || true'
+
 else
     echo "Git repositories already cloned"
 fi

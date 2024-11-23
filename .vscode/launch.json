@@ -2,25 +2,61 @@
 
     "configurations": [
         {
-            "name": "Python: Debugpy",
-            "type": "python",
+            "name": "localhost:8069 - Debug Attach",
+            "type": "debugpy",
+            "connect": {
+                "host": "web",
+                "port": 8888
+            },
             "request": "attach",
-            "port": 8069,
-            "debugServer": 8888,
-            "host": "web",   
             "justMyCode": false,       
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}/odoo",
-                    "remoteRoot":"/src/odoo",
-                },
-                {
-                    "localRoot": "${workspaceFolder}/user",
-                    "remoteRoot":"/src/user",
-                }
-            ],
-            "stopOnEntry": false,
             "logToFile": true,
+        },
+        {
+            "name": "localhost:8067 - Debug",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/src/odoo/odoo-bin",
+            "args": [
+            "--config=/etc/odoo/odoo.conf",
+            "--dev=xml",
+            "--db_host=mydb",
+            "--db_user=odoo",
+            "--db_password=myodoo",
+            ],
+        },    
+        {
+            "name": "Debug Tests",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/src/odoo/odoo-bin",
+            "args": [
+            "--config=/etc/odoo/odoo.conf",
+            "--dev=all",
+            "--stop-after-init",
+            "--test-file=${file}",
+            "--database=db18_test_${input:module}",
+            "--db_host=mydb",
+            "--db_user=odoo",
+            "--db_password=myodoo",
+            "--init=${input:module}",
+            "--update=${input:module}",
+            "--screencasts=/src/screencasts",
+            ]
+        },    
+    ],
+    
+    "inputs": [
+        {
+            "id": "module",
+            "type": "command",
+            "command": "extension.commandvariable.transform",
+            "args": {
+                "text": "${file}",
+                // get account from /src/odoo/addons/account/tests/test_account_analytic.py
+                "find": ".*\/([^\/]+)\/tests\/.*",
+                "replace": "$1",
+            },
         }
     ]
 }
