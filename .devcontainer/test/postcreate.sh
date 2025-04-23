@@ -2,18 +2,15 @@
 
 echo "Running postcreate.sh script"
 
-# Change owner and rights of ssh keys
-chown root:root ~/.ssh/*
-chmod 0600 ~/.ssh/*
-
-if ! test -d /src/.vscode; then
-    echo "Creating /src directory"
-    ln -s /repo/.vscode /src/.vscode
-    mkdir /src/screenshots
-fi
-cp /repo/.env /src/.env
 
 if ! test -d /src/user; then
+
+    if ssh git@github.com -T 2>&1 | grep -q 'successfully authenticated'; then
+        echo "SSH key is working"
+    else
+        echo "SSH key is not working"
+    fi
+
     echo "Cloning git repositories"
     cd /src
     git clone -b 18.0 --single-branch https://github.com/odoo/odoo.git odoo
@@ -28,7 +25,6 @@ if ! test -d /src/user; then
 
     # install pre-commit
     git submodule foreach '[ "$(echo $path | grep -o "modules/oca")" ] && pre-commit install || true'
-
 else
     echo "Git repositories already cloned"
 fi

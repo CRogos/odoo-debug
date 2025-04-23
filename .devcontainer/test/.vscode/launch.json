@@ -2,7 +2,7 @@
 
     "configurations": [
         {
-            "name": "localhost:8069 - Debug Attach",
+            "name": "localhost:8089 - Debug Attach",
             "type": "debugpy",
             "connect": {
                 "host": "web",
@@ -13,7 +13,7 @@
             "logToFile": true,
         },
         {
-            "name": "localhost:8067 - Debug",
+            "name": "localhost:8087 - Debug",
             "type": "debugpy",
             "request": "launch",
             "program": "/src/odoo/odoo-bin",

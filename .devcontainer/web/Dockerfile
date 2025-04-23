@@ -10,7 +10,7 @@ RUN apt-get update
 RUN apt-get install -y python3-jose
 RUN rm -rf /usr/lib/python3/dist-packages/odoo/addons/*
 RUN chmod +x /startup.sh
-
+RUN chown odoo:odoo /etc/odoo/
 
 USER odoo
 

@@ -1,38 +1,35 @@
 services:
-  dev:
-    build: dev
-    depends_on:
-      - mydb
-    volumes:
-      - odoo-dev-code:/src
-      - odoo-dev-cache:/root/.cache
-      - odoo-web-data:/var/lib/odoo
-      - odoo-home-data:/home/odoo/.config/odoo
-      - odoo-test-data:/tmp/screencasts
-      - ./web/config:/etc/odoo
-      - ~/.ssh:/root/.ssh # ssh key mounted from your host machine home directory/.ssh
-      - ..:/repo
-    ports:
-      - "8067:8069" 
-    environment:
-      - db_host=mydb
-      - db_password=myodoo
-      - db_user=odoo
-    # Runs app on the same network as the service container, allows "forwardPorts" in devcontainer.json function.
   web:
     build: web
     depends_on:
       - mydb
-    ports:
-      - "8069:8069"
     volumes:
-      - odoo-web-data:/var/lib/odoo
-      - ./web/config:/etc/odoo
+      - odoo-home:/var/lib/odoo
       - odoo-dev-code:/src
+    ports:
+      - "8089:8069" 
+    expose:
+      - "8888"    
     environment:
       - db_host=mydb
       - db_password=myodoo
       - db_user=odoo
+  test:
+    build: test
+    depends_on:
+      - mydb
+    volumes:
+      - odoo-home:/var/lib/odoo
+      - odoo-dev-code:/src
+      - odoo-test-data:/tmp/screencasts
+    environment:
+      - db_host=mydb
+      - db_password=myodoo
+      - db_user=odoo
+    stdin_open: true
+    ports:
+      - "8087:8069" 
+
   mydb:
     image: postgres:13
     environment:
@@ -44,19 +41,20 @@ services:
       - odoo-db-data:/var/lib/postgresql/data/pgdata
     expose:
       - "5432"
+
   dbadmin:
     image: dpage/pgadmin4
     depends_on:
       - mydb
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@domain.com
+      - PGADMIN_DEFAULT_EMAIL=admin@odoo.com
       - PGADMIN_DEFAULT_PASSWORD=admin
     ports:
-      - "8060:80" 
+      - "8088:80" 
+
+
 volumes:
-  odoo-dev-cache:
   odoo-dev-code:
-  odoo-web-data:
   odoo-db-data:
   odoo-test-data:
-  odoo-home-data:
+  odoo-home:

@@ -1,20 +1,20 @@
 {
-  "name": "Odoo-Dev",
+  "name": "Odoo-Dev-18",
   "dockerComposeFile": "docker-compose.yml",
-  "service": "dev",
+  "service": "test",
   "workspaceFolder": "/src",
-  "remoteUser": "root",
+  "remoteUser": "odoo",
   "shutdownAction": "stopCompose",
   "features": {},
-//  "postCreateCommand": "sudo chown -R vscode:vscode /home/vscode/.cache && sudo chown -R vscode:vscode /home/vscode/.ssh/config && chmod 700 ~/.ssh && chmod 600 ~/.ssh/*",
-  "postCreateCommand": "sh /repo/scripts/postcreate.sh",
+  "updateContentCommand": "sh /mnt/repo/postcreate.sh",
+    
   "customizations": {
     "vscode": {
       "settings": {
-        "python.pythonPath": "/usr/bin/python3",
+        "python.pythonPath": "/bin/python3.12",
         "python.linting.enabled": true,
         "python.linting.pylintEnabled": true
-      },
+      },  
       // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
         "streetsidesoftware.code-spell-checker",
@@ -29,7 +29,7 @@
         "github.vscode-github-actions",
         "hediet.vscode-drawio",
         "rioj7.command-variable"
-	]
+      ]
     }
   }
 }
